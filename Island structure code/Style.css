@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+
+.people {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  border-style: solid;
+  border-color: black;
+  z-index: 1;
+}
+
+
+
+#gamecontent {
+  border-color: black;
+  border-style: solid;
+  height: 800px;
+  width: 1300px;
+  position: relative; /* <-- Add this */
+  background-size: cover;
+}
+
+#obstacle1 {
+
+}
+
+#obstacle2 {
+
+}
+
+.obstacles {
+  position: absolute; /* <-- Add this */
+  border-style: solid;
+  border-width: 15px;
+  z-index: 1;
+
+}
+
+
+#hidespot1 {
+
+}
+
+
+
+.hidespots {
+position: absolute;
+border-style: dashed;
+border-width: 15px;
+border-color: red;
+z-index: 2;
+}
+
+
+
+
+
+
+#binoculars {
+  width: 20px;
+  height: 25px;
+  top: 600px;
+  left: 1000px;
+}
+
+
+
+.relics {
+  position: absolute;
+  background-color: aqua;
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+  z-index: 1;
+}
+
+/*#sightlimit {
+  position: absolute;
+  background-image: url("Clear hole.png");
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  margin: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

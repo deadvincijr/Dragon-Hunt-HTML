@@ -1,0 +1,120 @@
+/* ... (Previous CSS remains the same) ... */
+
+/* Add this at the bottom of your CSS */
+
+/* --- AMULET HISTORY LOG --- */
+.amulet-log-container {
+    max-height: 120px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.log-entry {
+    border-bottom: 1px solid #eee;
+    padding: 2px 0;
+    color: #333;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+/* Ensure buttons look good */
+.heal-ice-btn {
+    background-color: #00c3ff;
+    color: white;
+    text-shadow: 1px 1px 1px #000;
+}
+
+/* ... (Keep your existing Island, Dashboard, and Player Card styles) ... */
+.page-wrapper { display: flex; gap: 20px; max-width: 1000px; margin: 20px auto; }
+.textbox-area { width: 300px; flex-shrink: 0; }
+.textbox-area textarea { width: 100%; box-sizing: border-box; }
+#island-container { display: grid; grid-template-columns: 1fr 1fr 1fr; row-gap: 10px; column-gap: 10px; flex-grow: 1; max-width: 600px; }
+.islands { border: 5px solid black; aspect-ratio: 1 / 1; padding: 0; display: flex; justify-content: center; align-items: center; cursor: pointer; background-color: white; transition: all 0.3s ease; font-weight: bold; text-shadow: 1px 1px 2px white; }
+#island1 { background-size: cover; background-image: url("snowstorm.png"); }
+#island2 { background-size: cover; background-image: url("dragonisle.png"); }
+#island3 { background-size: cover; background-image: url("rocky.png"); }
+#island4 { background-size: cover; background-image: url("small.png"); }
+#island5 { background-size: cover; background-image: url("traditional.png"); }
+#island6 { background-size: cover; background-image: url("treasure.png"); }
+#island7 { background-size: cover; background-image: url("Tornado.png"); }
+#island8 { background-size: cover; background-image: url("Volcano.png"); }
+#island9 { background-size: cover; background-image: url("Swamp.png"); }
+.island-allowed { border-color: #4CAF50 !important; box-shadow: 0 0 15px #4CAF50 !important; z-index: 10; }
+.island-forbidden { border-color: #f44336 !important; opacity: 0.5 !important; filter: grayscale(100%); cursor: not-allowed !important; }
+#island5 { background-color: lime; }
+#player-status-area { max-width: 1000px; margin: 20px auto; padding: 10px 20px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 8px; }
+#player-status-area h3 { border-bottom: 2px solid #eee; padding-bottom: 5px; }
+#player-status-area h3 span { text-transform: capitalize; font-weight: bold; }
+#relic-list { list-style-type: none; padding-left: 0; }
+#relic-list li { padding: 5px; background-color: #fff; border: 1px solid #ddd; margin-top: 5px; border-radius: 4px; }
+#relic-list li.no-relics { background-color: transparent; border: none; color: #888; font-style: italic; }
+#binocular-display { position: fixed; top: 10px; right: 10px; width: 180px; background-color: rgba(0, 0, 0, 0.8); color: white; border: 2px solid #fff; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 14px; z-index: 100; }
+#binocular-display h4 { margin: 0 0 5px 0; text-decoration: underline; text-align: center; color: #00ffff; }
+.tracker-item { margin-bottom: 2px; text-transform: capitalize; }
+#amulet-control-box { position: fixed; top: 10px; left: 10px; width: 180px; background-color: rgba(0, 0, 0, 0.9); color: gold; border: 2px solid gold; border-radius: 8px; padding: 10px; font-family: sans-serif; z-index: 100; text-align: center; }
+#amulet-control-box h4 { margin: 0 0 10px 0; font-size: 14px; border-bottom: 1px solid gold; padding-bottom: 5px; text-transform: capitalize; }
+#amulet-control-box label { font-size: 0.9rem; display: block; margin-top: 5px; text-align: left; }
+#amulet-control-box select { width: 100%; margin-bottom: 5px; padding: 5px; background-color: #333; color: white; border: 1px solid gold; }
+#amulet-control-box button { background-color: gold; color: black; border: none; padding: 5px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; width: 100%; }
+#amulet-control-box button:hover { background-color: #ffdb4d; }
+#weather-control-panel { max-width: 1000px; margin: 20px auto; padding: 20px; border: 3px solid gold; background-color: #222; color: white; border-radius: 10px; text-align: center; box-shadow: 0 0 15px gold; }
+#weather-control-panel h3 { margin-top: 0; color: white; }
+.weather-btn { padding: 10px 20px; font-size: 1rem; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; width: 50%; }
+.weather-btn.allow { background-color: #4CAF50; color: white; }
+.weather-btn.forbid { background-color: #d9534f; color: white; }
+.weather-btn:disabled { background-color: #555; cursor: not-allowed; opacity: 0.5; }
+#dragon-dashboard { font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 0 20px; background-color: #fff; }
+.dashboard-header { text-align: center; padding-bottom: 10px; margin-bottom: 20px; }
+.dashboard-header h1 { color: #d9534f; margin: 0; }
+.dashboard-subheader { border-bottom: 2px solid #eee; padding-bottom: 5px; }
+.admin-panel { margin-top: 20px; background-color: #fdfdfd; border: 1px solid #ccc; border-radius: 8px; padding: 20px; }
+.control-group { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #eee; }
+.control-group:last-child { border-bottom: none; margin-bottom: 0; }
+.control-group label { font-weight: bold; margin-right: 10px; font-size: 0.95rem; }
+.control-group input[type="text"], .control-group select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; margin-right: 10px; }
+.control-group input[type="text"] { width: 300px; }
+.admin-action-btn { padding: 8px 15px; font-size: 0.9rem; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px; }
+.teleport-btn { background-color: #d9534f; color: white; }
+.volcano-btn { background-color: #f0ad4e; color: white; }
+.forbid-btn { background-color: #d9534f; color: white; }
+.reset-btn { background-color: #5bc0de; color: white; float: right; }
+#volcano-status-display { font-weight: bold; margin-left: 10px; }
+#player-list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.player-card { border: 1px solid #ccc; border-radius: 8px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden; }
+.player-card-header { padding: 15px 20px; border-bottom: 1px solid #eee; }
+.player-card-header h3 { margin: 0; font-size: 1.5rem; text-transform: capitalize; }
+.player-card-body { padding: 15px 20px; }
+.player-card p { margin: 0 0 10px 0; }
+.player-card h4 { margin: 15px 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+.player-card ul { list-style: none; padding: 0; margin: 0; }
+.player-card ul li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f4f4f4; }
+.player-card ul li:last-child { border-bottom: none; }
+.player-card button { padding: 3px 8px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem; }
+.player-card input { padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
+.admin-form { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #ccc; }
+.admin-form input[type="number"] { width: 60px; }
+.admin-form input[type="text"] { width: 120px; }
+.health-btn { background-color: #5cb85c; color: white; margin-left: 5px; }
+.add-relic-btn { background-color: #337ab7; color: white; margin-left: 5px; }
+.revoke-btn { background-color: #d9534f; color: white; }
+#dragon-control-panel { margin-top: 40px; background-color: #f9f9f9; border: 1px solid #ccc; border-radius: 8px; padding: 20px; }
+#dragon-list-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+.dragon-card { border: 1px solid #ccc; border-radius: 8px; background-color: #fff; padding: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.dragon-card h4 { margin: 0 0 10px 0; padding-bottom: 5px; border-bottom: 1px solid #eee; text-transform: capitalize; }
+.dragon-card label { font-weight: bold; font-size: 0.9rem; display: block; margin-top: 15px; margin-bottom: 5px; }
+.dragon-card input[type="number"] { width: 100px; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+.dragon-controls { margin-top: 20px; text-align: right; border-top: 1px solid #eee; padding-top: 20px; }
+.dragon-card p { margin: 10px 0; font-size: 0.95rem; }
+.dragon-location { font-weight: bold; color: #337ab7; font-size: 1.1rem; }
+.hiding-status { font-weight: bold; font-style: italic; color: #337ab7; }
+#danger-zone-panel { border-color: #d9534f; background-color: #fdf2f2; }
+#danger-zone-panel p { font-size: 0.9rem; color: #555; margin-top: 5px; }
+.hard-reset-btn { background-color: #d9534f; color: white; padding: 15px 30px; font-size: 1.1rem; width: 100%; margin-top: 10px; }
+.hard-reset-btn:hover { background-color: #c9302c; }

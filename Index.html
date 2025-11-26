@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Isle Selection</title>
+    <link rel="stylesheet" href="./Style.css">
+</head>
+<body>
+    
+    <div id="isle-selection-page" style="display: none;">
+        <div class="page-wrapper">
+            <div class="textbox-area">
+                <h3>Island Notes</h3>
+                <h2 id="player-round-display" style="color: #5bc0de; text-align:center;">Round: Loading...</h2>
+                <p id="isledescriptionbox">Click on an island to be given information about it</p>
+            </div>
+
+            <div id="island-container">
+                <div id="island1" class="islands" onclick="displayisleinfo(1)">Snowy island</div>
+                <div id="island2" class="islands" onclick="displayisleinfo(2)">Dragon island</div>
+                <div id="island3" class="islands" onclick="displayisleinfo(3)">Rocky island</div>
+                <div id="island4" class="islands" onclick="displayisleinfo(4)">Teensy Weensy island</div>
+                <div id="island5" class="islands" onclick="displayisleinfo(5)">Traditional island</div>
+                <div id="island6" class="islands" onclick="displayisleinfo(6)">Treasure island</div>
+                <div id="island7" class="islands" onclick="displayisleinfo(7)">Tornado island</div>
+                <div id="island8" class="islands" onclick="displayisleinfo(8)">Volcano island</div>
+                <div id="island9" class="islands" onclick="displayisleinfo(9)">Swamp island</div>
+            </div>
+        </div> 
+
+        <div id="player-status-area">
+            <h3>Player Status: <span id="player-color-display">Loading...</span></h3>
+            <p id="player-health-display">Health: Loading...</p>
+            <h4>Relics Found:</h4>
+            <ul id="relic-list"><li class="no-relics">Loading...</li></ul>
+        </div>
+
+        <div id="weather-control-panel" style="display: none;">
+            <h3><span style="color: yellow;">⚡</span> Weather Staff Control <span style="color: yellow;">⚡</span></h3>
+            <p id="weather-cooldown-msg">Checking cooldown...</p>
+            <div id="weather-controls-inner">
+                <label>Target Island:</label>
+                <select id="weather-island-select">
+                    <option value="1">1 (Snowy)</option>
+                    <option value="2">2 (Dragon)</option>
+                    <option value="3">3 (Rocky)</option>
+                    <option value="4">4 (Teensy)</option>
+                    <option value="5">5 (Traditional)</option>
+                    <option value="6">6 (Treasure)</option>
+                    <option value="7">7 (Tornado)</option>
+                    <option value="8">8 (Volcano)</option>
+                    <option value="9">9 (Swamp)</option>
+                </select>
+                <br><br>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button id="weather-allow-btn" class="weather-btn allow">Clear Skies (Allow All)</button>
+                    <button id="weather-forbid-btn" class="weather-btn forbid">Summon Storm (Forbid All)</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="amulet-control-box" style="display: none;">
+            <h4 id="amulet-title">Dragon Amulet</h4>
+            <div id="dragon-select-container" style="display:none;">
+                <label>Select Entity:</label>
+                <select id="amulet-dragon-select"></select>
+            </div>
+            <label>Target Island:</label>
+            <select id="amulet-island-select">
+                <option value="0">None</option>
+                <option value="1">1 (Snowy)</option>
+                <option value="2">2 (Dragon)</option>
+                <option value="3">3 (Rocky)</option>
+                <option value="4">4 (Teensy)</option>
+                <option value="5">5 (Traditional)</option>
+                <option value="6">6 (Treasure)</option>
+                <option value="7">7 (Tornado)</option>
+                <option value="8">8 (Volcano)</option>
+                <option value="9">9 (Swamp)</option>
+            </select>
+            <button id="amulet-submit-btn">Submit</button>
+        </div>
+
+        <div id="binocular-display" style="display: none;"></div>
+    </div>
+
+    <div id="dragon-dashboard" style="display: none;">
+        <div class="dashboard-header">
+            <h1>Dragon Admin Dashboard</h1>
+            <h2 id="admin-round-display" style="color: #5bc0de;">Round: Loading...</h2>
+        </div>
+
+        <div id="global-controls-panel" class="admin-panel">
+            <h2 class="dashboard-subheader">Global Controls</h2>
+            <div class="control-group">
+                <label for="force-teleport-url">Force Teleport All Players:</label>
+                <input type="text" id="force-teleport-url" placeholder="Paste full URL here...">
+                <button id="force-teleport-btn" class="admin-action-btn teleport-btn">TELEPORT ALL</button>
+                <p style="font-size: 0.8rem; color: #666; margin-top:5px;">(Teleporting advances the Round Count by 1)</p>
+            </div>
+            <div class="control-group">
+                <label>Volcano Status:</label>
+                <button id="toggle-volcano-btn" class="admin-action-btn volcano-btn">Loading...</button>
+                <span id="volcano-status-display"></span>
+            </div>
+            <div class="control-group">
+                <label>Special Actions:</label>
+                <button id="heal-icepack-btn" class="admin-action-btn heal-ice-btn">Heal Ice Pack Users (+1 HP)</button>
+            </div>
+        </div>
+        
+        <div id="permissions-panel" class="admin-panel">
+            <h2 class="dashboard-subheader">Player Permissions</h2>
+            <div class="control-group">
+                <label for="perm-player-select">Player:</label>
+                <select id="perm-player-select"></select>
+                <label for="perm-island-select">Island:</label>
+                <select id="perm-island-select">
+                    <option value="1">1 (Snowy)</option>
+                    <option value="2">2 (Dragon)</option>
+                    <option value="3">3 (Rocky)</option>
+                    <option value="4">4 (Teensy)</option>
+                    <option value="5">5 (Traditional)</option>
+                    <option value="6">6 (Treasure)</option>
+                    <option value="7">7 (Tornado)</option>
+                    <option value="8">8 (Volcano)</option>
+                    <option value="9">9 (Swamp)</option>
+                    <option value="10">10 (Erupted)</option>
+                </select>
+                <button id="perm-allow-btn" class="admin-action-btn">Allow</button>
+                <button id="perm-forbid-btn" class="admin-action-btn forbid-btn">Forbid</button>
+                <button id="perm-reset-btn" class="admin-action-btn reset-btn">Reset All</button>
+            </div>
+        </div>
+
+        <div class="admin-panel">
+            <h2 class="dashboard-subheader">Player Management</h2>
+            <div id="player-list-container"></div>
+        </div>
+
+        <div id="dragon-control-panel" class="admin-panel">
+            <h2 class="dashboard-subheader">Dragon Control Panel</h2>
+            <div id="dragon-list-container"></div>
+            <div classs="dragon-controls">
+                <button id="randomize-dragons-btn" class="admin-action-btn">Randomize All</button>
+                <button id="commit-dragons-btn" class="admin-action-btn">Commit Changes</button>
+            </div>
+        </div>
+
+        <div id="danger-zone-panel" class="admin-panel">
+            <h2 class="dashboard-subheader" style="color: #d9534f;">Danger Zone</h2>
+            <div class="control-group">
+                <label for="hard-reset-btn">Hard Reset Game:</label>
+                <p>This will use the Teleport URL, set health to 10, wipe relics, history, and logs.</p>
+                <button id="hard-reset-btn" class="admin-action-btn hard-reset-btn">PERFORM HARD RESET</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+    <script src="./Script.js"></script>
+</body>
+</html>
