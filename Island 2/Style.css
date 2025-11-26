@@ -1,0 +1,254 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black; /* BACKGROUND IS NOW BLACK */
+  overflow: hidden; /* Prevents scrollbars during flyover */
+}
+
+/* --- LOADING SCREEN STYLES --- */
+#loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000; 
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; 
+  transition: opacity 1s ease; 
+  font-family: sans-serif;
+}
+
+#loading-screen h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+/* --- GIANT FLYING DRAGON ANIMATION --- */
+#flying-dragon {
+    position: fixed;
+    top: 50%;            
+    transform: translateY(-50%);
+    left: -150vw;        /* Start far off-screen left */
+    width: 80vw;         /* HUGE: 80% of screen width */
+    z-index: 100000;     /* Top of EVERYTHING */
+    pointer-events: none; 
+    display: block;      
+}
+
+.fly-animation {
+    animation: flyRight 4s linear forwards;
+}
+
+@keyframes flyRight {
+    0% { left: -100vw; }
+    100% { left: 100vw; }
+}
+
+/* --- BINOCULAR TRACKER STYLE --- */
+#binocular-display {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 180px;
+  background-color: rgba(0, 0, 0, 0.7); 
+  color: white;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 14px;
+  z-index: 20; 
+  pointer-events: none; 
+}
+
+#binocular-display h4 {
+  margin: 0 0 5px 0;
+  text-decoration: underline;
+  text-align: center;
+  color: #00ffff; 
+}
+
+.tracker-item {
+  margin-bottom: 2px;
+  text-transform: capitalize;
+}
+
+/* --- AMULET CONTROL BOX STYLE --- */
+#amulet-control-box {
+  position: absolute;
+  top: 10px;
+  left: 10px; 
+  width: 180px;
+  background-color: rgba(0, 0, 0, 0.8); 
+  color: gold;
+  border: 2px solid gold;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: sans-serif;
+  z-index: 21; 
+  text-align: center;
+}
+
+#amulet-control-box h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  border-bottom: 1px solid gold;
+  padding-bottom: 5px;
+  text-transform: capitalize;
+}
+
+#amulet-control-box label {
+  font-size: 0.9rem;
+  display: block;
+  margin-top: 5px;
+  text-align: left;
+}
+
+#amulet-control-box select {
+  width: 100%;
+  margin-bottom: 5px;
+  padding: 5px;
+  background-color: #333;
+  color: white;
+  border: 1px solid gold;
+}
+
+#amulet-control-box button {
+  background-color: gold;
+  color: black;
+  border: none;
+  padding: 5px 15px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-top: 5px;
+  width: 100%;
+}
+
+#amulet-control-box button:hover {
+  background-color: #ffdb4d;
+}
+
+/* --- Player Color Definitions --- */
+#aqua { background-color: aqua; }
+#blue { background-color: blue; }
+#brown { background-color: brown; }
+#coral { background-color: coral; }
+#gray { background-color: gray; }
+#green { background-color: green; }
+#lime { background-color: lime; }
+#maroon { background-color: maroon; }
+#navy { background-color: navy; }
+#orange { background-color: orange; }
+#pink { background-color: pink; }
+#purple { background-color: purple; }
+#red { background-color: red; }
+#white { background-color: white; }
+#yellow { background-color: yellow; }
+
+.people {
+  width: 15px;
+  height: 15px;
+  position: absolute;
+  border-style: solid;
+  border-color: black;
+  z-index: 1;
+  display: none; /* Hidden by default to prevent ghosts */
+}
+
+#gamecontent {
+  border-color: black;
+  border-style: solid;
+  height: 800px;
+  width: 1300px;
+  position: relative; 
+  background-color: lime;
+}
+
+#obstacle1 {
+  left: 1170px;
+  width: 100px;
+  height: 100px;
+  background-color: gray;
+  background-size: cover;
+  background-image: url("dragonhole.png");
+}
+
+#obstacle2 {
+  left: 300px;
+  top: 510px;
+  width: 800px;
+  height: 60px;
+  background-size: contain;
+  background-image: url("marsh.jpeg");
+}
+
+.obstacles {
+  position: absolute; 
+  border-style: solid;
+  border-width: 5px;
+  z-index: 1;
+}
+
+#hidespot1 { width: 40px; height: 40px; top: 500px; left: 40px; background-size: cover; background-image: url("Treespot.png"); }
+#hidespot2 { width: 40px; height: 40px; top: 500px; left: 150px; background-size: cover; background-image: url("Treespot.png"); }
+#hidespot3 { width: 40px; height: 40px; top: 620px; left: 40px; background-size: cover; background-image: url("Treespot.png"); }
+#hidespot4 { width: 40px; height: 40px; top: 620px; left: 150px; background-size: cover; background-image: url("Treespot.png"); }
+#hidespot5 { width: 60px; height: 40px; top: 30px; left: 710px; background-image: url("Cavespot.png"); background-size: cover; }
+#hidespot6 { width: 60px; height: 40px; top: 680px; left: 1110px; background-size: cover; background-image: url("Cavespot.png"); }
+
+.hidespots {
+  position: absolute;
+  z-index: 2;
+}
+
+#orangeamulet { width: 20px; height: 25px; top: 630px; left: 900px; }
+#sailboat { width: 20px; height: 25px; top: 85px; left: 900px; }
+
+.relics {
+  position: absolute;
+  background-color: aqua;
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+  z-index: 5; 
+  display: block;
+}
+
+#tracks {
+  position: absolute;
+  height: 430px;
+  width: 40px;
+  left: 800px;
+  background-size: contain;
+  background-image: url("tracks.png")
+}
+
+#tracks2 {
+  position: absolute;
+  width: 430px;
+  height: 40px;
+  left: 800px;
+  top: 430px;
+  background-size: contain;
+  background-image: url("tracks2.png")
+}
+
+#sightlimit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: url('sightlimit.png');
+  background-repeat: no-repeat;
+  background-position: -1985px -905px;
+  z-index: 10; 
+  pointer-events: none;
+  background-size: 4000px 2500px; 
+}

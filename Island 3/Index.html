@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rocky Island</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    
+    <div id="loading-screen">
+        <h1>Entering Rocky Island...</h1>
+        <p>Please wait...</p>
+    </div>
+
+    <img id="flying-dragon" src="dragon.png" alt="Dragon Flyover">
+
+    <div id="gamecontent">
+        <div id="aqua" class="people"></div>
+        <div id="blue" class="people"></div>
+        <div id="brown" class="people"></div>
+        <div id="coral" class="people"></div>
+        <div id="gray" class="people"></div>
+        <div id="green" class="people"></div>
+        <div id="lime" class="people"></div>
+        <div id="maroon" class="people"></div>
+        <div id="navy" class="people"></div>
+        <div id="orange" class="people"></div>
+        <div id="pink" class="people"></div>
+        <div id="purple" class="people"></div>
+        <div id="red" class="people"></div>
+        <div id="white" class="people"></div>
+        <div id="yellow" class="people"></div>
+
+        <div id="obstacle1" class ="obstacles"></div>
+        <div id="obstacle2" class ="obstacles"></div>
+        <div id="obstacle3" class ="obstacles"></div>
+        <div id="obstacle4" class ="obstacles"></div>
+        <div id="obstacle5" class ="obstacles"></div>
+        <div id="obstacle6" class ="obstacles"></div>   
+        <div id="obstacle7" class ="obstacles"></div>
+        <div id="obstacle8" class ="obstacles"></div>
+
+        <div id="hidespot1" class="hidespots"></div>
+        <div id="hidespot2" class="hidespots"></div>
+        <div id="hidespot3" class="hidespots"></div>
+
+        <div id="binoculars" class="relics"></div>
+        <div id="wizardstaff" class="relics"></div>
+        
+        <div id="amulet-control-box" style="display: none;">
+            <h4 id="amulet-title">Command Entity</h4>
+            <div id="dragon-select-container" style="display:none;">
+                <label>Select Entity:</label>
+                <select id="amulet-dragon-select"></select>
+            </div>
+            <label>Target Island:</label>
+            <select id="amulet-island-select">
+                <option value="0">None</option>
+                <option value="1">1 (Snowy)</option>
+                <option value="2">2 (Dragon)</option>
+                <option value="3">3 (Rocky)</option>
+                <option value="4">4 (Teensy)</option>
+                <option value="5">5 (Traditional)</option>
+                <option value="6">6 (Treasure)</option>
+                <option value="7">7 (Tornado)</option>
+                <option value="8">8 (Volcano)</option>
+                <option value="9">9 (Swamp)</option>
+            </select>
+            <button id="amulet-submit-btn">Submit</button>
+        </div>
+
+        <div id="binocular-display" style="display: none;"></div>
+
+        <div id="sightlimit"></div>
+    </div>
+
+    <p id="localxdisp">Local X is loading</p>
+    <p id="localydisp">Local Y is loading</p>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+    
+    <script src="Script.js"></script>
+</body>
+</html>
