@@ -1,0 +1,95 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: black;
+  overflow: hidden;
+}
+
+/* --- LOADING SCREEN STYLES --- */
+#loading-screen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background-color: #000; color: white;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  z-index: 9999; transition: opacity 1s ease; font-family: sans-serif;
+}
+#loading-screen h1 { font-size: 3rem; margin-bottom: 10px; }
+
+/* --- FLYING DRAGON --- */
+#flying-dragon {
+    position: fixed; top: 50%; transform: translateY(-50%); left: -150vw; width: 80vw;
+    z-index: 100000; pointer-events: none; display: block;
+}
+.fly-animation { animation: flyRight 4s linear forwards; }
+@keyframes flyRight { 0% { left: -100vw; } 100% { left: 100vw; } }
+
+/* --- UI --- */
+#binocular-display {
+  position: absolute; top: 10px; right: 10px; width: 180px;
+  background-color: rgba(0, 0, 0, 0.7); color: white;
+  border: 2px solid #fff; border-radius: 8px; padding: 10px;
+  font-family: monospace; font-size: 14px; z-index: 20; pointer-events: none;
+}
+#binocular-display h4 { margin: 0 0 5px 0; text-decoration: underline; text-align: center; color: #00ffff; }
+.tracker-item { margin-bottom: 2px; text-transform: capitalize; }
+
+#amulet-control-box {
+  position: absolute; top: 10px; left: 10px; width: 180px;
+  background-color: rgba(0, 0, 0, 0.8); color: gold;
+  border: 2px solid gold; border-radius: 8px; padding: 10px;
+  font-family: sans-serif; z-index: 21; text-align: center;
+}
+#amulet-control-box h4 { margin: 0 0 10px 0; font-size: 14px; border-bottom: 1px solid gold; padding-bottom: 5px; text-transform: capitalize; }
+#amulet-control-box label { font-size: 0.9rem; display: block; margin-top: 5px; text-align: left; }
+#amulet-control-box select { width: 100%; margin-bottom: 5px; padding: 5px; background-color: #333; color: white; border: 1px solid gold; }
+#amulet-control-box button { background-color: gold; color: black; border: none; padding: 5px 15px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 5px; width: 100%; }
+#amulet-control-box button:hover { background-color: #ffdb4d; }
+
+/* --- GAME --- */
+#aqua { background-color: aqua; } #blue { background-color: blue; } #brown { background-color: brown; } #coral { background-color: coral; } #gray { background-color: gray; } #green { background-color: green; } #lime { background-color: lime; } #maroon { background-color: maroon; } #navy { background-color: navy; } #orange { background-color: orange; } #pink { background-color: pink; } #purple { background-color: purple; } #red { background-color: red; } #white { background-color: white; } #yellow { background-color: yellow; }
+
+.people {
+  width: 15px; height: 15px; position: absolute;
+  border-style: solid; border-color: black; z-index: 1;
+  display: none;
+}
+
+#gamecontent {
+  border-color: black; border-style: solid;
+  height: 800px; width: 1300px; position: relative; 
+  background-size: cover; background-color: #A52A2A;
+}
+
+#obstacle1 { left: 350px; top: 300px; width: 600px; height: 100px; }
+#obstacle2 { left: 600px; top: 100px; width: 100px; height: 500px; }
+#obstacle3 { width: 300px; height: 300px; left: 500px; top: 200px; }
+
+.obstacles {
+  position: absolute; border-style: solid; border-width: 15px;
+  z-index: 1; background-color: #36454F; border-color: #FF4500;
+}
+
+#hidespot1 { width: 65px; height: 95px; top: 500px; left: 400px;}
+#hidespot2 { width: 65px; height: 95px; top: 100px; left: 1000px; }
+
+.hidespots {
+  position: absolute;
+  z-index: 2;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("Cavespot.png");
+}
+
+#relic1 { width: 20px; height: 25px; top: 600px; left: 1000px; }
+
+.relics {
+  position: absolute; background-color: aqua;
+  border-width: 3px; border-style: solid; border-color: black;
+  z-index: 5; display: block;
+}
+
+#sightlimit {
+  position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+  background-image: url('sightlimit.png'); background-repeat: no-repeat;
+  background-position: -1985px -905px; z-index: 10; pointer-events: none;
+  background-size: 4000px 2500px; 
+}
