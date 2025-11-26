@@ -75,20 +75,20 @@ function displayisleinfo(selected) {
     } else if (selected === 8) {
         if (isVolcanoErupted) {
             islandId = 10; 
-            islandDescription = "ERUPTED VOLCANO: The volcano has erupted! The island is now a barren wasteland of ash and magma.";
+            islandDescription = "Volcano Island. The volcano has erupted! The island is now completely uninhabitable without finding some way to endure the harsh elements...";
         } else {
-            islandDescription = "A desolate wasteland ravaged by battles gone. Max stay: 1 turn.";
+            islandDescription = "Volcano Island. A desolate wasteland ravaged by battles gone. This island is only habitable for one turn before you have to go somewhere else. I have no idea why you would go here.";
         }
     } else {
         const descriptions = {
-            1: "Snowy Island. Low visibility. Max stay: 2 turns.",
-            2: "Dragon Island. Northernmost island. Many dragons.",
-            3: "Rocky Island. Many caves.",
-            4: "Teensy Weensy Island. Small, but strategic.",
-            5: "Traditional Island. Central hub.",
-            6: "Treasure Island. Requires Star from the Heavens.",
-            7: "Tornado Island. Uninhabitable. Requires Hazmat Suit.",
-            9: "Swamp Island. Muddy and murky."
+            1: "Snowy Island. A relatively unknown island. Most dragons stay away from it as the fog makes it hard to see. Here you can't see more than 15 feet in front of you. You can only stay here for 2 turns because it is basically uninhabitable.",
+            2: "Dragon Island. The Northernmost island. Believe to be home of several dragons, this island holds many relics, but also the danger of dragons finding you on their home turf.  This island is where many lesser dragons flee to avoid the power of the apex dragons which have carved out empires for themselves.",
+            3: "Rocky Island. Terrain is very rocky and has lots of caves and hiding spots but has high dragon encounters for those unlucky enough to not find a cave.",
+            4: "Teensy Weensy Island. An island about the size of a small neighborhood. All dragons go here all the time, but there is a cave with enough room for one person so they can hide.",
+            5: "Traditional Island. This is the place of many battles. The most legendary of which is said to have created a great wizard who blasted his whole family in his search for power. The island's terrain isn't particularly dangerous, although most of the known dragons are known to visit it from time to time.",
+            6: "Treasure Island. There is lots of treasure here and relics and no apparent danger. Dragons rarely visit it. Unfortunately though, the island is cursed and you need to find a way to get around the curse to visit the island.",
+            7: "Tornado Island. This island is completely uninhabitable and you can't go here without some form of special power to brave the storms.",
+            9: "Swamp Island. Very muddy and murky. The island itself is considered to be very hard to navigate and although they're rare, does have dragon attacks from time to time."
         };
         islandDescription = descriptions[selected] || "Unknown Island";
     }
@@ -871,3 +871,4 @@ function calculateRandomIsland(color) {
     return 0; // Fallback
 
 }
+
