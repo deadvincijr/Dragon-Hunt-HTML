@@ -107,7 +107,7 @@ function displayisleinfo(selected) {
         }
 
         if (confirm("Do you want to travel to the selected island?")) {
-            const baseUrl = `https://glowing-acorn-jjw4r5jg6rr6394p-3000.app.github.dev/Dragon-Hunt-HTML/Island ${islandId}/Index.html`;
+            const baseUrl = `https://deadvincijr.github.io/Dragon-Hunt-HTML/Island ${islandId}/Index.html`;
             if (islandId === 6) {
                  database.ref(`players/${myColor}/relics/starFromHeavens`).remove();
             }
@@ -869,4 +869,5 @@ function calculateRandomIsland(color) {
         randomNum -= weights[islandId];
     }
     return 0; // Fallback
+
 }
