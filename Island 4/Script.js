@@ -7,7 +7,7 @@ const myIslandId = 4;
 const myDefaultColor = 'pink';
 const SIGHT_HOLE_X = 2000; 
 const SIGHT_HOLE_Y = 1255;  
-const MAP_HEIGHT = 600; // TEENSY WEENSY
+const MAP_HEIGHT = 800; // TEENSY WEENSY
 const DRAGON_FLY_TIME = 4000;
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -281,4 +281,5 @@ window.addEventListener('load', () => {
         const loader = document.getElementById('loading-screen');
         if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 1000); }
     }, 3000); 
+
 });
