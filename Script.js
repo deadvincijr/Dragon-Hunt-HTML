@@ -107,7 +107,7 @@ function displayisleinfo(selected) {
         }
 
         if (confirm("Do you want to travel to the selected island?")) {
-            const baseUrl = `https://deadvincijr.github.io/Dragon-Hunt-HTML/Island ${islandId}/Index.html`;
+            const baseUrl = `./Island ${islandId}/Index.html`;
             if (islandId === 6) {
                  database.ref(`players/${myColor}/relics/starFromHeavens`).remove();
             }
@@ -474,6 +474,10 @@ const dragonOdds = {
 };
 const dragonList = Object.keys(dragonOdds);
 
+// ===================================================================
+// --- DRAGON DASHBOARD LOGIC (SMART UPDATES) ---
+// ===================================================================
+
 function runDragonDashboard() {
     const playerContainer = document.getElementById('player-list-container');
     const dragonContainer = document.getElementById('dragon-list-container');
@@ -487,95 +491,79 @@ function runDragonDashboard() {
 
     database.ref('players').on('value', (snapshot) => {
         const allPlayersData = snapshot.val() || {};
-        playerContainer.innerHTML = ''; 
-        playerSelect.innerHTML = ''; 
+        
+        // CRITICAL FIX: We NO LONGER clear the innerHTML here. 
+        // We only update what exists to prevent stealing your cursor focus.
+        
         const sortedColors = Object.keys(allPlayersData).sort();
         sortedColors.forEach(color => {
-            playerContainer.appendChild(createPlayerCard(color, allPlayersData[color]));
-            const option = document.createElement('option');
-            option.value = color;
-            option.textContent = color.charAt(0).toUpperCase() + color.slice(1);
-            playerSelect.appendChild(option);
+            let card = document.getElementById(`player-card-${color}`);
+            
+            if (!card) {
+                // 1. Create the skeleton if it doesn't exist
+                card = createPlayerCardSkeleton(color);
+                playerContainer.appendChild(card);
+                
+                // 2. Add them to the permissions dropdown
+                const option = document.createElement('option');
+                option.value = color;
+                option.id = `perm-opt-${color}`;
+                option.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+                playerSelect.appendChild(option);
+            }
+            
+            // 3. Gently update the data without touching your inputs
+            updatePlayerCard(color, allPlayersData[color]);
+        });
+        
+        // Clean up players that were deleted (e.g., during a Hard Reset)
+        Array.from(playerContainer.children).forEach(child => {
+            const color = child.dataset.color;
+            if (!allPlayersData[color]) {
+                child.remove();
+                const opt = document.getElementById(`perm-opt-${color}`);
+                if(opt) opt.remove();
+            }
         });
     });
 
     database.ref('dragons').on('value', (snapshot) => {
         const allDragonsData = snapshot.val() || {};
-        dragonContainer.innerHTML = '';
-        for (const color of dragonList) {
-            dragonContainer.appendChild(createDragonCard(color, allDragonsData[color] || {}));
-        }
+        
+        dragonList.forEach(color => {
+            let dCard = document.getElementById(`dragon-card-${color}`);
+            if (!dCard) {
+                dCard = createDragonCardSkeleton(color);
+                dragonContainer.appendChild(dCard);
+            }
+            updateDragonCard(color, allDragonsData[color] || {});
+        });
     });
 }
 
-function createPlayerCard(color, data) {
+function createPlayerCardSkeleton(color) {
     const card = document.createElement('div');
     card.className = 'player-card';
-
-    let locationString = 'Offline';
-    if (data.position && data.island) {
-        const hidingStatus = data.position.isHiding === true ? " <span class='hiding-status'>(Hiding)</span>" : "";
-        locationString = `Island ${data.island} (${data.position.x}, ${data.position.y})${hidingStatus}`;
-    } else if (data.island) {
-        locationString = `Offline (Last on Island ${data.island})`;
-    } else if (data.relics || data.health) {
-        locationString = 'On Isle Selection';
-    }
-
-    const health = data.health || 0;
+    card.id = `player-card-${color}`; // Give it an ID!
+    card.dataset.color = color;
     
-    let amuletTarget = "None";
-    if (data.amuletSelection) {
-        if (typeof data.amuletSelection === 'object') {
-            const dragonName = data.amuletSelection.dragon;
-            const displayName = dragonName.includes("Staff") ? dragonName : `${dragonName} Dragon`;
-            const styleColor = dragonName.includes("Staff") ? "black" : dragonName.toLowerCase();
-            const roundInfo = data.amuletSelection.round ? `(Rnd ${data.amuletSelection.round})` : "";
-            amuletTarget = `<strong style="color:${styleColor}">${displayName}</strong> -> Island ${data.amuletSelection.island} <span style="font-size:0.8em">${roundInfo}</span>`;
-        } else {
-            amuletTarget = `Island ${data.amuletSelection}`;
-        }
-    }
-
-    // --- HISTORY LOG DISPLAY ---
-    let logHTML = '<div class="amulet-log-container"><strong>History:</strong>';
-    if (data.amuletLog) {
-        Object.values(data.amuletLog).reverse().forEach(entry => {
-            const r = entry.round || "?";
-            const d = entry.dragon.includes("Staff") ? entry.dragon : `${entry.dragon}`;
-            logHTML += `<div class="log-entry">[Rnd ${r}] <strong>${d}</strong> &rarr; Isle ${entry.island}</div>`;
-        });
-    } else {
-        logHTML += '<div class="log-entry">No history.</div>';
-    }
-    logHTML += '</div>';
-
-    let relicHTML = '';
-    if (data.relics) {
-        Object.keys(data.relics).forEach(relicKey => {
-            if (data.relics[relicKey] === true) {
-                relicHTML += `<li><span>${formatRelicName(relicKey)}</span><button class="revoke-btn" data-player="${color}" data-relic="${relicKey}">Revoke</button></li>`;
-            }
-        });
-    }
-    if (relicHTML === '') relicHTML = '<li class="no-relics" style="border:none; background:none;">None</li>';
-
     const headerColor = (color.toLowerCase() === 'white' || color.toLowerCase() === 'yellow' || color.toLowerCase() === 'aqua' || color.toLowerCase() === 'lime') ? '#333' : '#fff';
 
+    // We set up empty spans with IDs that we will inject data into later
     card.innerHTML = `
         <div class="player-card-header" style="background-color: ${color}; color: ${headerColor};">
             <h3>${color}</h3>
         </div>
         <div class="player-card-body">
-            <p><strong>Location:</strong> ${locationString}</p>
-            <p><strong>Health:</strong> ${health}</p>
-            <p><strong>Amulet Target:</strong> ${amuletTarget}</p>
-            ${logHTML}
+            <p><strong>Location:</strong> <span id="loc-disp-${color}">Loading...</span></p>
+            <p><strong>Health:</strong> <span id="hp-disp-${color}">Loading...</span></p>
+            <p><strong>Amulet Target:</strong> <span id="amulet-disp-${color}">Loading...</span></p>
+            <div id="log-disp-${color}"></div>
             <h4>Relics</h4>
-            <ul class="relic-list">${relicHTML}</ul>
+            <ul class="relic-list" id="relics-disp-${color}"></ul>
             <div class="admin-form">
                 <div>
-                    <input type="number" id="input-health-${color}" placeholder="Set Health" value="${health}">
+                    <input type="number" id="input-health-${color}" placeholder="Set Health">
                     <button class="health-btn" data-player="${color}">Set</button>
                 </div>
                 <div style="margin-top: 10px;">
@@ -588,54 +576,95 @@ function createPlayerCard(color, data) {
     return card;
 }
 
-// --- SERVER-SIDE LOGGING FUNCTION ---
-function enableHistoryLogging() {
-    database.ref('players').once('value', snapshot => {
-        if (!snapshot.exists()) return;
-        
-        Object.keys(snapshot.val()).forEach(colorId => {
-            const selectionRef = database.ref(`players/${colorId}/amuletSelection`);
-            
-            selectionRef.on('value', snap => {
-                const currentSelection = snap.val();
-                if (!currentSelection) return;
+function updatePlayerCard(color, data) {
+    // 1. Update Location text
+    let locationString = 'Offline';
+    if (data.position && data.island) {
+        const hidingStatus = data.position.isHiding === true ? " <span class='hiding-status'>(Hiding)</span>" : "";
+        locationString = `Island ${data.island} (${data.position.x}, ${data.position.y})${hidingStatus}`;
+    } else if (data.island) {
+        locationString = `Offline (Last on Island ${data.island})`;
+    } else if (data.relics || data.health) {
+        locationString = 'On Isle Selection';
+    }
+    document.getElementById(`loc-disp-${color}`).innerHTML = locationString;
 
-                // FIX: Inject round if missing
-                if (!currentSelection.round) currentSelection.round = currentRound;
+    // 2. Update Health text AND Input (only if you aren't currently typing in it!)
+    const health = data.health || 0;
+    document.getElementById(`hp-disp-${color}`).innerText = health;
+    
+    const healthInput = document.getElementById(`input-health-${color}`);
+    if (document.activeElement !== healthInput) {
+        healthInput.value = health;
+    }
 
-                const logRef = database.ref(`players/${colorId}/amuletLog`);
-                
-                logRef.limitToLast(1).once('value', logSnap => {
-                    let lastEntry = null;
-                    logSnap.forEach(child => { lastEntry = child.val(); });
+    // 3. Update Amulet
+    let amuletTarget = "None";
+    if (data.amuletSelection) {
+        if (typeof data.amuletSelection === 'object') {
+            const dragonName = data.amuletSelection.dragon;
+            const displayName = dragonName.includes("Staff") ? dragonName : `${dragonName} Dragon`;
+            const styleColor = dragonName.includes("Staff") ? "black" : dragonName.toLowerCase();
+            const roundInfo = data.amuletSelection.round ? `(Rnd ${data.amuletSelection.round})` : "";
+            amuletTarget = `<strong style="color:${styleColor}">${displayName}</strong> -> Island ${data.amuletSelection.island} <span style="font-size:0.8em">${roundInfo}</span>`;
+        } else {
+            amuletTarget = `Island ${data.amuletSelection}`;
+        }
+    }
+    document.getElementById(`amulet-disp-${color}`).innerHTML = amuletTarget;
 
-                    const isNew = !lastEntry || 
-                                  lastEntry.round !== currentSelection.round ||
-                                  lastEntry.island !== currentSelection.island ||
-                                  lastEntry.dragon !== currentSelection.dragon;
-
-                    if (isNew) {
-                        logRef.push(currentSelection);
-                    }
-                });
-            });
+    // 4. Update Log
+    let logHTML = '<div class="amulet-log-container"><strong>History:</strong>';
+    if (data.amuletLog) {
+        Object.values(data.amuletLog).reverse().forEach(entry => {
+            const r = entry.round || "?";
+            const d = entry.dragon.includes("Staff") ? entry.dragon : `${entry.dragon}`;
+            logHTML += `<div class="log-entry">[Rnd ${r}] <strong>${d}</strong> &rarr; Isle ${entry.island}</div>`;
         });
-    });
+    } else {
+        logHTML += '<div class="log-entry">No history.</div>';
+    }
+    logHTML += '</div>';
+    document.getElementById(`log-disp-${color}`).innerHTML = logHTML;
+
+    // 5. Update Relics
+    let relicHTML = '';
+    if (data.relics) {
+        Object.keys(data.relics).forEach(relicKey => {
+            if (data.relics[relicKey] === true) {
+                relicHTML += `<li><span>${formatRelicName(relicKey)}</span><button class="revoke-btn" data-player="${color}" data-relic="${relicKey}">Revoke</button></li>`;
+            }
+        });
+    }
+    if (relicHTML === '') relicHTML = '<li class="no-relics" style="border:none; background:none;">None</li>';
+    document.getElementById(`relics-disp-${color}`).innerHTML = relicHTML;
 }
 
-function createDragonCard(color, data) {
+function createDragonCardSkeleton(color) {
     const card = document.createElement('div');
     card.className = 'dragon-card';
+    card.id = `dragon-card-${color}`; // Give it an ID!
     card.style.borderColor = color;
-    const currentIsland = data.island || 0;
-    const locationString = currentIsland === 0 ? "Not on map" : `Island ${currentIsland}`;
     card.innerHTML = `
         <h4 style="color: ${color};">${color} Dragon</h4>
-        <p><strong>Current Location:</strong> <span class="dragon-location">${locationString}</span></p>
+        <p><strong>Current Location:</strong> <span class="dragon-location" id="dragon-loc-${color}"></span></p>
         <label for="input-island-${color}">Set New Target:</label>
-        <input type="number" id="input-island-${color}" class="dragon-island-input" data-dragon="${color}" value="${currentIsland}" min="0">
+        <input type="number" id="input-island-${color}" class="dragon-island-input" data-dragon="${color}" min="0">
     `;
     return card;
+}
+
+function updateDragonCard(color, data) {
+    const currentIsland = data.island || 0;
+    const locationString = currentIsland === 0 ? "Not on map" : `Island ${currentIsland}`;
+    
+    document.getElementById(`dragon-loc-${color}`).innerText = locationString;
+    
+    // Only update the dragon's input box if you aren't currently clicking inside it
+    const inputField = document.getElementById(`input-island-${color}`);
+    if (document.activeElement !== inputField) {
+        inputField.value = currentIsland;
+    }
 }
 
 function addPlayerDashboardEventListeners() {
@@ -790,14 +819,16 @@ function addGlobalControlEventsListeners() {
     const playerSelect = document.getElementById('perm-player-select');
     const islandSelect = document.getElementById('perm-island-select');
 
+// Replace your allowBtn listener with this:
     allowBtn.addEventListener('click', () => {
         const player = playerSelect.value;
         const island = islandSelect.value;
         if (!player || !island) return;
-        database.ref(`permissions/${player}/${island}`).remove()
-            .then(() => alert(`${player} is now ALLOWED on Island ${island}`));
+    
+        // CRITICAL FIX: Use .set(true) to force the override
+        database.ref(`permissions/${player}/${island}`).set(true)
+        .then(() => alert(`${player} is now explicitly ALLOWED on Island ${island} (Overriding all rules)`));
     });
-
     forbidBtn.addEventListener('click', () => {
         const player = playerSelect.value;
         const island = islandSelect.value;
