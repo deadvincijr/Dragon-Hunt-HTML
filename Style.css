@@ -1,3 +1,9 @@
+body {
+    background-color: darkslategray;
+}
+
+
+
 /* ... (Previous CSS remains the same) ... */
 
 /* Add this at the bottom of your CSS */
@@ -49,7 +55,7 @@
 .island-allowed { border-color: #4CAF50 !important; box-shadow: 0 0 15px #4CAF50 !important; z-index: 10; }
 .island-forbidden { border-color: #f44336 !important; opacity: 0.5 !important; filter: grayscale(100%); cursor: not-allowed !important; }
 #island5 { background-color: lime; }
-#player-status-area { max-width: 1000px; margin: 20px auto; padding: 10px 20px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 8px; }
+#player-status-area { max-width: 1000px; margin: 20px auto; padding: 10px 20px; border: 1px solid #ccc; background-color: #f9f9f9; border-radius: 8px; background-color: darkcyan;}
 #player-status-area h3 { border-bottom: 2px solid #eee; padding-bottom: 5px; }
 #player-status-area h3 span { text-transform: capitalize; font-weight: bold; }
 #relic-list { list-style-type: none; padding-left: 0; }
@@ -118,3 +124,4 @@
 #danger-zone-panel p { font-size: 0.9rem; color: #555; margin-top: 5px; }
 .hard-reset-btn { background-color: #d9534f; color: white; padding: 15px 30px; font-size: 1.1rem; width: 100%; margin-top: 10px; }
 .hard-reset-btn:hover { background-color: #c9302c; }
+#isledescriptionbox {background-color: darkcyan; border: 2px, solid, black; border-radius: 50%; padding: 50px; }
