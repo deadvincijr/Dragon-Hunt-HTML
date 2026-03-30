@@ -6,7 +6,7 @@ const analytics = firebase.analytics();
 const myIslandId = 4; 
 const myDefaultColor = 'pink';
 const SIGHT_HOLE_X = 2000; 
-const SIGHT_HOLE_Y = 1255;  
+const SIGHT_HOLE_Y = 1562;  
 const MAP_HEIGHT = 800; // TEENSY WEENSY
 const DRAGON_FLY_TIME = 4000;
 
