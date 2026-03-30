@@ -58,6 +58,7 @@ let uninhabitableIslands = {};
 let redDragonIsland = 0; 
 
 // --- DISPLAY ISLAND INFO ---
+// --- DISPLAY ISLAND INFO (FIXED FOR ISLAND 10 ROUTING) ---
 function displayisleinfo(selected) {
     let isledecriptionboxjs = document.getElementById("isledescriptionbox"); 
     if (!isledecriptionboxjs) { return; }
@@ -107,7 +108,17 @@ function displayisleinfo(selected) {
         }
 
         if (confirm("Do you want to travel to the selected island?")) {
-            const baseUrl = `./Island ${islandId}/Index.html`;
+            // --- CRITICAL FIX: Custom Routing for Island 10 ---
+            let baseUrl = `./Island ${islandId}/Index.html`;
+            
+            if (islandId === 10) {
+                // If your folder inside Island 8 is named exactly "Island 10", use this:
+                baseUrl = `./Island 8/Erupted island/Index.html`;
+                
+                // (Note: If you named the folder something else, like "Erupted", 
+                // you would change it to: `./Island 8/Erupted/Index.html`)
+            }
+
             if (islandId === 6) {
                  database.ref(`players/${myColor}/relics/starFromHeavens`).remove();
             }
