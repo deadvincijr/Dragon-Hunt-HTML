@@ -411,11 +411,13 @@ function updateHistoryAndResetLocation(color, cameFromIsland, oldHistory) {
 function checkIslandRules(targetIsland, data) {
     const relics = data.relics || {};
     const history = data.history || { lastIsland: 0, consecutiveTurns: 0 };
-    const lastIsland = history.lastIsland || 0; 
-    const consecutive = history.consecutiveTurns || 0;
+    
+    // CRITICAL FIX: parseInt forces the data to be a number, preventing "10" === 10 bugs
+    const rawLastIsland = parseInt(history.lastIsland, 10) || 0; 
+    const consecutive = parseInt(history.consecutiveTurns, 10) || 0;
 
-    // --- CRITICAL FIX 1: Treat 10 as 8 for travel rules ---
-    let effectiveLastIsland = lastIsland;
+    // Force Island 10 to act identically to Island 8 for distance checks
+    let effectiveLastIsland = rawLastIsland;
     if (effectiveLastIsland === 10) {
         effectiveLastIsland = 8;
     }
@@ -430,17 +432,19 @@ function checkIslandRules(targetIsland, data) {
         return { allowed: false, reason: "The Red Dragon has scorched this island! It is currently uninhabitable." };
     }
     
-    if (targetIsland === lastIsland && consecutive >= 3 && !relics.waterBucket) return { allowed: false, reason: "You cannot stay on an island for more than 3 turns without a Water Bucket." };
+    if (targetIsland === rawLastIsland && consecutive >= 3 && !relics.waterBucket) return { allowed: false, reason: "You cannot stay on an island for more than 3 turns without a Water Bucket." };
     if (targetIsland === 6 && !relics.starFromHeavens) return { allowed: false, reason: "You can't currently go to this island without some form of protection from the natural forces." };
     
-    // Notice we use effectiveLastIsland here too
     if (targetIsland === 8 && effectiveLastIsland === 8 && consecutive >= 1) return { allowed: false, reason: "Volcano Island is too dangerous to stay more than 1 turn." };
-    if (targetIsland === 1 && targetIsland === lastIsland && consecutive >= 2) return { allowed: false, reason: "It is too cold to stay on Snowy Island for more than 2 turns." };
+    if (targetIsland === 1 && targetIsland === rawLastIsland && consecutive >= 2) return { allowed: false, reason: "It is too cold to stay on Snowy Island for more than 2 turns." };
     
-    // --- CRITICAL FIX 1 (CONT.): Use effectiveLastIsland for the adjacency check ---
+    // Adjacency check using the mathematically corrected 'effectiveLastIsland'
     if (effectiveLastIsland !== 0 && targetIsland !== effectiveLastIsland && !relics.sailboat) {
         const neighbors = ADJACENCY[effectiveLastIsland] || [];
-        if (!neighbors.includes(targetIsland)) return { allowed: false, reason: `You can only travel to adjacent islands from Island ${effectiveLastIsland}. (Unless you have a Sailboat)` };
+        if (!neighbors.includes(targetIsland)) {
+             // We print rawLastIsland in the alert so it correctly tells the player "Island 10"
+             return { allowed: false, reason: `You can only travel to adjacent islands from Island ${rawLastIsland}. (Unless you have a Sailboat)` };
+        }
     }
     
     if (targetIsland === 7 && !relics.hazmatSuit) return { allowed: false, reason: "You can't currently go to this island without some form of protection from the natural forces." };
