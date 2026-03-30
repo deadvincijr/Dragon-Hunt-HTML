@@ -414,6 +414,12 @@ function checkIslandRules(targetIsland, data) {
     const lastIsland = history.lastIsland || 0; 
     const consecutive = history.consecutiveTurns || 0;
 
+    // --- CRITICAL FIX 1: Treat 10 as 8 for travel rules ---
+    let effectiveLastIsland = lastIsland;
+    if (effectiveLastIsland === 10) {
+        effectiveLastIsland = 8;
+    }
+
     if (playerPermissions[data.color] && playerPermissions[data.color][targetIsland] === true) return { allowed: true };
     if (playerPermissions[data.color] && playerPermissions[data.color][targetIsland] === false) return { allowed: false, reason: "Admin has forbidden travel here." };
     
@@ -426,12 +432,15 @@ function checkIslandRules(targetIsland, data) {
     
     if (targetIsland === lastIsland && consecutive >= 3 && !relics.waterBucket) return { allowed: false, reason: "You cannot stay on an island for more than 3 turns without a Water Bucket." };
     if (targetIsland === 6 && !relics.starFromHeavens) return { allowed: false, reason: "You can't currently go to this island without some form of protection from the natural forces." };
-    if (targetIsland === 8 && targetIsland === lastIsland && consecutive >= 1) return { allowed: false, reason: "Volcano Island is too dangerous to stay more than 1 turn." };
+    
+    // Notice we use effectiveLastIsland here too
+    if (targetIsland === 8 && effectiveLastIsland === 8 && consecutive >= 1) return { allowed: false, reason: "Volcano Island is too dangerous to stay more than 1 turn." };
     if (targetIsland === 1 && targetIsland === lastIsland && consecutive >= 2) return { allowed: false, reason: "It is too cold to stay on Snowy Island for more than 2 turns." };
     
-    if (lastIsland !== 0 && targetIsland !== lastIsland && !relics.sailboat) {
-        const neighbors = ADJACENCY[lastIsland] || [];
-        if (!neighbors.includes(targetIsland)) return { allowed: false, reason: `You can only travel to adjacent islands from Island ${lastIsland}. (Unless you have a Sailboat)` };
+    // --- CRITICAL FIX 1 (CONT.): Use effectiveLastIsland for the adjacency check ---
+    if (effectiveLastIsland !== 0 && targetIsland !== effectiveLastIsland && !relics.sailboat) {
+        const neighbors = ADJACENCY[effectiveLastIsland] || [];
+        if (!neighbors.includes(targetIsland)) return { allowed: false, reason: `You can only travel to adjacent islands from Island ${effectiveLastIsland}. (Unless you have a Sailboat)` };
     }
     
     if (targetIsland === 7 && !relics.hazmatSuit) return { allowed: false, reason: "You can't currently go to this island without some form of protection from the natural forces." };
@@ -889,6 +898,9 @@ function addGlobalControlEventsListeners() {
                 updates[`players/${colorId}/amuletLog`] = null; // CLEAR LOG
                 updates[`players/${colorId}/history`] = { lastIsland: 0, consecutiveTurns: 0 }; 
                 updates[`players/${colorId}/weatherStaffLastUsedRound`] = null; 
+                
+                // --- CRITICAL FIX 2: Clear their physical location so the Main Site ignores them ---
+                updates[`players/${colorId}/island`] = 0; 
             }
             updates['game_state/force_teleport_url'] = { url: url, timestamp: Date.now() };
             updates['game_state/current_round'] = 1;
