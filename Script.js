@@ -587,8 +587,9 @@ function createPlayerCardSkeleton(color) {
     return card;
 }
 
+// --- SMART DELTA UPDATES: Only changes the exact piece of text that updated ---
 function updatePlayerCard(color, data) {
-    // 1. Update Location text
+    // 1. Update Location ONLY if it changed
     let locationString = 'Offline';
     if (data.position && data.island) {
         const hidingStatus = data.position.isHiding === true ? " <span class='hiding-status'>(Hiding)</span>" : "";
@@ -598,18 +599,21 @@ function updatePlayerCard(color, data) {
     } else if (data.relics || data.health) {
         locationString = 'On Isle Selection';
     }
-    document.getElementById(`loc-disp-${color}`).innerHTML = locationString;
-
-    // 2. Update Health text AND Input (only if you aren't currently typing in it!)
-    const health = data.health || 0;
-    document.getElementById(`hp-disp-${color}`).innerText = health;
     
-    const healthInput = document.getElementById(`input-health-${color}`);
-    if (document.activeElement !== healthInput) {
-        healthInput.value = health;
+    const locDisp = document.getElementById(`loc-disp-${color}`);
+    if (locDisp && locDisp.innerHTML !== locationString) {
+        locDisp.innerHTML = locationString;
     }
 
-    // 3. Update Amulet
+    // 2. Update Health Display ONLY if it changed
+    // NOTE: We no longer touch the input box. The span shows the current health.
+    const health = data.health || 0;
+    const hpDisp = document.getElementById(`hp-disp-${color}`);
+    if (hpDisp && hpDisp.innerText != health) {
+        hpDisp.innerText = health;
+    }
+
+    // 3. Update Amulet Target ONLY if it changed
     let amuletTarget = "None";
     if (data.amuletSelection) {
         if (typeof data.amuletSelection === 'object') {
@@ -622,9 +626,12 @@ function updatePlayerCard(color, data) {
             amuletTarget = `Island ${data.amuletSelection}`;
         }
     }
-    document.getElementById(`amulet-disp-${color}`).innerHTML = amuletTarget;
+    const amuletDisp = document.getElementById(`amulet-disp-${color}`);
+    if (amuletDisp && amuletDisp.innerHTML !== amuletTarget) {
+        amuletDisp.innerHTML = amuletTarget;
+    }
 
-    // 4. Update Log
+    // 4. Update History Log ONLY if it changed
     let logHTML = '<div class="amulet-log-container"><strong>History:</strong>';
     if (data.amuletLog) {
         Object.values(data.amuletLog).reverse().forEach(entry => {
@@ -636,9 +643,13 @@ function updatePlayerCard(color, data) {
         logHTML += '<div class="log-entry">No history.</div>';
     }
     logHTML += '</div>';
-    document.getElementById(`log-disp-${color}`).innerHTML = logHTML;
+    
+    const logDisp = document.getElementById(`log-disp-${color}`);
+    if (logDisp && logDisp.innerHTML !== logHTML) {
+        logDisp.innerHTML = logHTML;
+    }
 
-    // 5. Update Relics
+    // 5. Update Relics List ONLY if it changed
     let relicHTML = '';
     if (data.relics) {
         Object.keys(data.relics).forEach(relicKey => {
@@ -648,7 +659,11 @@ function updatePlayerCard(color, data) {
         });
     }
     if (relicHTML === '') relicHTML = '<li class="no-relics" style="border:none; background:none;">None</li>';
-    document.getElementById(`relics-disp-${color}`).innerHTML = relicHTML;
+    
+    const relicsDisp = document.getElementById(`relics-disp-${color}`);
+    if (relicsDisp && relicsDisp.innerHTML !== relicHTML) {
+        relicsDisp.innerHTML = relicHTML;
+    }
 }
 
 function createDragonCardSkeleton(color) {
@@ -678,6 +693,7 @@ function updateDragonCard(color, data) {
     }
 }
 
+// --- EVENT LISTENERS: Now clears the input box after you send a command ---
 function addPlayerDashboardEventListeners() {
     const container = document.getElementById('player-list-container');
     container.addEventListener('click', function(event) {
@@ -688,7 +704,10 @@ function addPlayerDashboardEventListeners() {
         if (target.classList.contains('health-btn')) {
             const healthInput = document.getElementById(`input-health-${player}`);
             const newHealth = parseInt(healthInput.value, 10);
-            if (!isNaN(newHealth)) database.ref(`players/${player}/health`).set(newHealth);
+            if (!isNaN(newHealth)) {
+                database.ref(`players/${player}/health`).set(newHealth);
+                healthInput.value = ''; // Clear the box after setting
+            }
         }
         if (target.classList.contains('add-relic-btn')) {
             const relicInput = document.getElementById(`input-relic-${player}`);
