@@ -62,14 +62,27 @@ function calculateDragonDamage(color) {
     return { dmg, msg };
 }
 
+// --- HELPER: GIVE RANDOM LOOT (FIXED FOR BATCHING) ---
 function giveRandomLoot() {
     const roll = Math.random();
     let item = "", key = "";
-    if (roll < 0.25) { item = "Ice Pack"; key = "icePack"; } else if (roll < 0.50) { item = "Great Sword"; key = "greatSword"; } else if (roll < 0.75) { item = "Star from the Heavens"; key = "starFromHeavens"; } else { item = "Magic's Bane"; key = "magicsBane"; }
+    
+    if (roll < 0.25) { item = "Ice Pack"; key = "icePack"; } 
+    else if (roll < 0.50) { item = "Great Sword"; key = "greatSword"; } 
+    else if (roll < 0.75) { item = "Star from the Heavens"; key = "starFromHeavens"; } 
+    else { item = "Magic's Bane"; key = "magicsBane"; }
+
+    // Check database to see if they already own the item
     database.ref(`players/${myColor}/relics/${key}`).once('value').then(snap => {
         if (!snap.exists()) {
-             triggerFlyover();
-             setTimeout(() => { database.ref(`players/${myColor}/relics/${key}`).set(true); alert(`THE BLUE DRAGON HAS ARRIVED!\n\nYou obtained the: ${item}!`); }, DRAGON_FLY_TIME);
+             // 1. Give the item to the database
+             database.ref(`players/${myColor}/relics/${key}`).set(true);
+             
+             // 2. Queue the message into the single shared Dragon Report
+             queueDragonEvent(0, `BLUE DRAGON ARRIVED!\nLoot Obtained: ${item}`);
+        } else {
+             // Optional: Let them know the dragon visited even if they had the item
+             queueDragonEvent(0, `BLUE DRAGON ARRIVED!\n(No loot given: You already own the ${item})`);
         }
     });
 }
@@ -89,17 +102,24 @@ dragons.forEach(color => {
         }
     });
 });
-
-let hasIslandLoaded = false;
+// --- GLOBAL TELEPORT LISTENER (FIXED) ---
 const globalTeleportRef = database.ref('game_state/force_teleport_url');
+let hasIslandLoaded = false;
+
 globalTeleportRef.on('value', (snapshot) => {
     if (!hasIslandLoaded) { hasIslandLoaded = true; return; }
+    
     const data = snapshot.val();
     if (data && data.url) {
-        database.ref('dragons/blue/island').once('value').then(dragonSnap => {
-            if (dragonSnap.val() == myIslandId) giveRandomLoot();
-            setTimeout(() => { alert("The Admin has summoned all players!"); let newUrl = data.url; if (newUrl.includes('?')) newUrl += `&player=${myColor}`; else newUrl += `?player=${myColor}`; window.location.href = newUrl; }, DRAGON_FLY_TIME + 500);
-        });
+        // Instant teleport. No double-dipping the dragon!
+        alert("The Admin has summoned all players!");
+        let newUrl = data.url;
+        if (newUrl.includes('?')) { 
+            newUrl += `&player=${myColor}`; 
+        } else { 
+            newUrl += `?player=${myColor}`; 
+        }
+        window.location.href = newUrl;
     }
 });
 
