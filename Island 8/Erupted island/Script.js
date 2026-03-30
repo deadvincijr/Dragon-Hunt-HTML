@@ -138,7 +138,7 @@ const islandRelicsRef = database.ref(`islands/${myIslandId}/relics_taken`);
 
 myIslandRef.set(myIslandId);
 myPositionRef.onDisconnect().remove();
-document.title = `Island ${myIslandId} - ${myColor.charAt(0).toUpperCase() + myColor.slice(1)} Player`;
+document.title = `Erupted Island 8 - ${myColor.charAt(0).toUpperCase() + myColor.slice(1)} Player`;
 
 // --- ELEMENTS ---
 const localXdispP = document.getElementById('localxdisp');
