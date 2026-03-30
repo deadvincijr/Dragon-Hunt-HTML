@@ -68,6 +68,31 @@ function calculateDragonDamage(color) {
     return { dmg, msg };
 }
 
+// --- HELPER: GIVE RANDOM LOOT (FIXED FOR BATCHING) ---
+function giveRandomLoot() {
+    const roll = Math.random();
+    let item = "", key = "";
+    
+    if (roll < 0.25) { item = "Ice Pack"; key = "icePack"; } 
+    else if (roll < 0.50) { item = "Great Sword"; key = "greatSword"; } 
+    else if (roll < 0.75) { item = "Star from the Heavens"; key = "starFromHeavens"; } 
+    else { item = "Magic's Bane"; key = "magicsBane"; }
+
+    // Check database to see if they already own the item
+    database.ref(`players/${myColor}/relics/${key}`).once('value').then(snap => {
+        if (!snap.exists()) {
+             // 1. Give the item to the database
+             database.ref(`players/${myColor}/relics/${key}`).set(true);
+             
+             // 2. Queue the message into the single shared Dragon Report
+             queueDragonEvent(0, `BLUE DRAGON ARRIVED!\nLoot Obtained: ${item}`);
+        } else {
+             // Optional: Let them know the dragon visited even if they had the item
+             queueDragonEvent(0, `BLUE DRAGON ARRIVED!\n(No loot given: You already own the ${item})`);
+        }
+    });
+}
+
 const dragons = ['green', 'red', 'yellow', 'black', 'orange', 'white', 'blue'];
 const dragonLoaded = {}; 
 dragons.forEach(color => {
@@ -77,7 +102,7 @@ dragons.forEach(color => {
         const data = snap.val() || {};
         // CRITICAL: Listen for Island 8 (the base island ID for Volcano)
         if (data.island == 8) {
-            if (color === 'blue') { queueDragonEvent(0, "Blue Dragon flew overhead!"); return; }
+            if (color === 'blue') { giveRandomLoot(); return; }
             if (color === 'white') { queueDragonEvent(-10, "WHITE Dragon cleansed corruption and healed you!"); return; }
             const result = calculateDragonDamage(color);
             queueDragonEvent(result.dmg, result.msg);
@@ -85,15 +110,23 @@ dragons.forEach(color => {
     });
 });
 
+// --- GLOBAL TELEPORT LISTENER (FIXED) ---
 const globalTeleportRef = database.ref('game_state/force_teleport_url');
 let hasIslandLoaded = false;
+
 globalTeleportRef.on('value', (snapshot) => {
     if (!hasIslandLoaded) { hasIslandLoaded = true; return; }
+    
     const data = snapshot.val();
     if (data && data.url) {
+        // Instant teleport. No double-dipping the dragon!
         alert("The Admin has summoned all players!");
         let newUrl = data.url;
-        if (newUrl.includes('?')) newUrl += `&player=${myColor}`; else newUrl += `?player=${myColor}`;
+        if (newUrl.includes('?')) { 
+            newUrl += `&player=${myColor}`; 
+        } else { 
+            newUrl += `?player=${myColor}`; 
+        }
         window.location.href = newUrl;
     }
 });
