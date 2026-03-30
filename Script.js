@@ -583,13 +583,30 @@ function createPlayerCardSkeleton(color) {
                 </div>
             </div>
         </div>
-    `;
+    `;6
     return card;
 }
 
-// --- SMART DELTA UPDATES: Only changes the exact piece of text that updated ---
+// --- NEW HELPER: Bulletproof DOM Tracker ---
+// This guarantees the browser ONLY redraws if the string truly changed.
+function smartUpdate(elementId, newValue, isHTML = false) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    
+    // We check against a custom dataset attribute instead of browser-formatted innerHTML
+    if (el.dataset.exactVal !== String(newValue)) {
+        if (isHTML) {
+            el.innerHTML = newValue;
+        } else {
+            el.innerText = newValue;
+        }
+        el.dataset.exactVal = String(newValue);
+    }
+}
+
+// --- COMPLETELY REWRITTEN UPDATE LOGIC ---
 function updatePlayerCard(color, data) {
-    // 1. Update Location ONLY if it changed
+    // 1. Update Location
     let locationString = 'Offline';
     if (data.position && data.island) {
         const hidingStatus = data.position.isHiding === true ? " <span class='hiding-status'>(Hiding)</span>" : "";
@@ -599,21 +616,13 @@ function updatePlayerCard(color, data) {
     } else if (data.relics || data.health) {
         locationString = 'On Isle Selection';
     }
-    
-    const locDisp = document.getElementById(`loc-disp-${color}`);
-    if (locDisp && locDisp.innerHTML !== locationString) {
-        locDisp.innerHTML = locationString;
-    }
+    smartUpdate(`loc-disp-${color}`, locationString, true);
 
-    // 2. Update Health Display ONLY if it changed
-    // NOTE: We no longer touch the input box. The span shows the current health.
-    const health = data.health || 0;
-    const hpDisp = document.getElementById(`hp-disp-${color}`);
-    if (hpDisp && hpDisp.innerText != health) {
-        hpDisp.innerText = health;
-    }
+    // 2. Update Health Display
+    // CRITICAL FIX: We NEVER touch the input box anymore. It stays perfectly blank.
+    smartUpdate(`hp-disp-${color}`, data.health || 0, false);
 
-    // 3. Update Amulet Target ONLY if it changed
+    // 3. Update Amulet
     let amuletTarget = "None";
     if (data.amuletSelection) {
         if (typeof data.amuletSelection === 'object') {
@@ -626,12 +635,9 @@ function updatePlayerCard(color, data) {
             amuletTarget = `Island ${data.amuletSelection}`;
         }
     }
-    const amuletDisp = document.getElementById(`amulet-disp-${color}`);
-    if (amuletDisp && amuletDisp.innerHTML !== amuletTarget) {
-        amuletDisp.innerHTML = amuletTarget;
-    }
+    smartUpdate(`amulet-disp-${color}`, amuletTarget, true);
 
-    // 4. Update History Log ONLY if it changed
+    // 4. Update Log
     let logHTML = '<div class="amulet-log-container"><strong>History:</strong>';
     if (data.amuletLog) {
         Object.values(data.amuletLog).reverse().forEach(entry => {
@@ -643,13 +649,9 @@ function updatePlayerCard(color, data) {
         logHTML += '<div class="log-entry">No history.</div>';
     }
     logHTML += '</div>';
-    
-    const logDisp = document.getElementById(`log-disp-${color}`);
-    if (logDisp && logDisp.innerHTML !== logHTML) {
-        logDisp.innerHTML = logHTML;
-    }
+    smartUpdate(`log-disp-${color}`, logHTML, true);
 
-    // 5. Update Relics List ONLY if it changed
+    // 5. Update Relics
     let relicHTML = '';
     if (data.relics) {
         Object.keys(data.relics).forEach(relicKey => {
@@ -659,11 +661,7 @@ function updatePlayerCard(color, data) {
         });
     }
     if (relicHTML === '') relicHTML = '<li class="no-relics" style="border:none; background:none;">None</li>';
-    
-    const relicsDisp = document.getElementById(`relics-disp-${color}`);
-    if (relicsDisp && relicsDisp.innerHTML !== relicHTML) {
-        relicsDisp.innerHTML = relicHTML;
-    }
+    smartUpdate(`relics-disp-${color}`, relicHTML, true);
 }
 
 function createDragonCardSkeleton(color) {
@@ -684,13 +682,9 @@ function updateDragonCard(color, data) {
     const currentIsland = data.island || 0;
     const locationString = currentIsland === 0 ? "Not on map" : `Island ${currentIsland}`;
     
-    document.getElementById(`dragon-loc-${color}`).innerText = locationString;
+    smartUpdate(`dragon-loc-${color}`, locationString, false);
     
-    // Only update the dragon's input box if you aren't currently clicking inside it
-    const inputField = document.getElementById(`input-island-${color}`);
-    if (document.activeElement !== inputField) {
-        inputField.value = currentIsland;
-    }
+    // CRITICAL FIX: We NEVER touch the dragon island input box anymore.
 }
 
 // --- EVENT LISTENERS: Now clears the input box after you send a command ---
